@@ -9,6 +9,9 @@ import {
   Text,
 } from "@chakra-ui/react";
 
+import Login from "../components/Authentication/Login";
+import SignUp from "../components/Authentication/SignUp";
+
 export interface HomepageProps {}
 
 export default function Homepage(props: HomepageProps) {
@@ -42,8 +45,12 @@ export default function Homepage(props: HomepageProps) {
             <Tab width="50%">Sign Up</Tab>
           </TabList>
           <TabPanels>
-            <TabPanel>{/* <Login /> */}</TabPanel>
-            <TabPanel>{/* <SignUp /> */}</TabPanel>
+            <TabPanel>
+              <Login />
+            </TabPanel>
+            <TabPanel>
+              <SignUp />
+            </TabPanel>
           </TabPanels>
         </Tabs>
       </Box>
