@@ -5,6 +5,7 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  useToast,
   VStack,
 } from "@chakra-ui/react";
 import { useState } from "react";
@@ -16,11 +17,13 @@ interface IUserSignUp {
   email: string;
   password: string;
   confirmPassword: string;
-  picture?: FileList | null;
+  picture?: File | string;
 }
 
 export default function SignUp(props: ISignUpProps) {
+  const toast = useToast();
   const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState<IUserSignUp>();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,9 +34,52 @@ export default function SignUp(props: ISignUpProps) {
     setShow(!show);
   };
 
-  const postDetails = (pic: FileList) => {};
+  const postDetails = (pic: File) => {
+    setLoading(true);
+    if (pic === undefined) {
+      toast({
+        title: "Please, select an image!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+    }
 
-  const submitHandler = () => {};
+    if (pic.type === "image/jpeg" || pic.type === "image/png") {
+      const data = new FormData();
+      data.append("file", pic);
+      data.append("upload_preset", "chat-app");
+      data.append("cloud_name", "paulocarvalho");
+
+      fetch("https://api.cloudinary.com/v1_1/paulocarvalho/image/upload", {
+        method: "POST",
+        body: data,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setData({ ...data, picture: data.url.toString() });
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+        });
+    } else {
+      toast({
+        title: "Please, select an image!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+    }
+  };
+
+  const submitHandler = async () => {
+    setLoading(true);
+  };
 
   return (
     <VStack spacing="0.313rem" color="black">
@@ -93,6 +139,7 @@ export default function SignUp(props: ISignUpProps) {
         colorScheme="purple"
         width="100%"
         style={{ marginTop: 15 }}
+        isLoading={loading}
         onClick={submitHandler}
       >
         Sign Up
