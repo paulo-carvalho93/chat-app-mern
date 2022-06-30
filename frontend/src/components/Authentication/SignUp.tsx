@@ -16,12 +16,12 @@ interface IUserSignUp {
   email: string;
   password: string;
   confirmPassword: string;
-  pic?: string;
+  picture?: FileList | null;
 }
 
 export default function SignUp(props: ISignUpProps) {
-  const [data, setData] = useState<IUserSignUp>();
   const [show, setShow] = useState(false);
+  const [data, setData] = useState<IUserSignUp>();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setData({ ...data, [event.target.name]: event.target.value });
@@ -31,20 +31,12 @@ export default function SignUp(props: ISignUpProps) {
     setShow(!show);
   };
 
-  const postDetails = (pics) => {};
+  const postDetails = (pic: FileList) => {};
 
   const submitHandler = () => {};
 
   return (
     <VStack spacing="0.313rem" color="black">
-      <FormControl id="name" isRequired>
-        <FormLabel>Name</FormLabel>
-        <Input
-          name="name"
-          placeholder="Enter your Name"
-          onChange={handleChange}
-        />
-      </FormControl>
       <FormControl id="email" isRequired>
         <FormLabel>Email</FormLabel>
         <Input

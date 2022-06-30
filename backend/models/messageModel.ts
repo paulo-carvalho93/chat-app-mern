@@ -1,6 +1,12 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Types } from "mongoose";
 
-const messageModel = new mongoose.Schema(
+interface IMessage {
+  sender: Types.ObjectId;
+  content: string;
+  chat: Types.ObjectId;
+}
+
+const messageSchema = new Schema<IMessage>(
   {
     sender: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     content: { type: String, trim: true },
@@ -11,6 +17,6 @@ const messageModel = new mongoose.Schema(
   }
 );
 
-const Message = mongoose.model("Message", messageModel);
+const Message = mongoose.model<IMessage>("Message", messageSchema);
 
 export default Message;
