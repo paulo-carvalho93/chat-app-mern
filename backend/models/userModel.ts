@@ -1,6 +1,7 @@
+import bcrypt from "bcrypt";
 import mongoose, { Schema } from "mongoose";
 
-interface IUSer {
+interface IUser {
   name: string;
   email: string;
   password: string;
@@ -8,7 +9,7 @@ interface IUSer {
   isAdmin: boolean;
 }
 
-const userSchema = new Schema<IUSer>(
+const UserSchema = new Schema<IUser>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -27,6 +28,23 @@ const userSchema = new Schema<IUSer>(
   { timestamps: true }
 );
 
-const User = mongoose.model<IUSer>("User", userSchema);
+UserSchema.methods.matchPassword = async function (enteredPassword: string) {
+  const isMatch = await bcrypt.compare(enteredPassword, this.password);
+  return isMatch;
+};
+
+UserSchema.pre(
+  "save",
+  async function (next: mongoose.CallbackWithoutResultAndOptionalError) {
+    if (!this.isModified) {
+      next();
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+  }
+);
+
+const User = mongoose.model<IUser>("User", UserSchema);
 
 export default User;

@@ -38,6 +38,7 @@
         "import/prefer-default-export": "off",
         "no-shadow": "off",
         "no-console": "off",
+        "func-names": "off",
         "no-useless-constructor": "off",
         "no-underscore-dangle": "off",
         "no-empty-function": "off",

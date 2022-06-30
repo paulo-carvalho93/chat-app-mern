@@ -6,7 +6,7 @@ interface IMessage {
   chat: Types.ObjectId;
 }
 
-const messageSchema = new Schema<IMessage>(
+const MessageSchema = new Schema<IMessage>(
   {
     sender: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     content: { type: String, trim: true },
@@ -17,6 +17,6 @@ const messageSchema = new Schema<IMessage>(
   }
 );
 
-const Message = mongoose.model<IMessage>("Message", messageSchema);
+const Message = mongoose.model<IMessage>("Message", MessageSchema);
 
 export default Message;

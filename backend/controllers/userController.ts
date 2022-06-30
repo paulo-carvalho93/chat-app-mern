@@ -41,3 +41,24 @@ export const registerUser = asyncHandler(
     }
   }
 );
+
+export const authUser = asyncHandler(
+  async (request: Request, response: Response) => {
+    const { email, password } = request.body;
+
+    const user = await User.findOne({ email });
+
+    if (user && (await user.matchPassword(password))) {
+      response.json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        picture: user.picture,
+        token: generateToken(user._id),
+      });
+    } else {
+      response.status(400);
+      throw new Error("Invalid Email or Password.");
+    }
+  }
+);

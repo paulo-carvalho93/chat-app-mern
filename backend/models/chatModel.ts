@@ -13,7 +13,7 @@ interface IChat {
   groupAdmin: Types.ObjectId;
 }
 
-const chatSchema = new Schema<IChat>(
+const ChatSchema = new Schema<IChat>(
   {
     chatName: { type: String, trim: true },
     isGroupChat: { type: Boolean, default: false },
@@ -29,6 +29,6 @@ const chatSchema = new Schema<IChat>(
   { timestamps: true }
 );
 
-const Chat = mongoose.model<IChat>("Chat", chatSchema);
+const Chat = mongoose.model<IChat>("Chat", ChatSchema);
 
 export default Chat;
