@@ -4,9 +4,16 @@ import asyncHandler from "express-async-handler";
 import generateToken from "../config/generateToken";
 import User from "../models/userModel";
 
+interface IUser {
+  name: string;
+  email: string;
+  password: string;
+  picture?: string;
+}
+
 export const registerUser = asyncHandler(
   async (request: Request, response: Response) => {
-    const { name, email, password, picture } = request.body;
+    const { name, email, password, picture } = <IUser>request.body;
 
     if (!name || !email || !password) {
       response.status(400);
@@ -44,7 +51,7 @@ export const registerUser = asyncHandler(
 
 export const authUser = asyncHandler(
   async (request: Request, response: Response) => {
-    const { email, password } = request.body;
+    const { email, password } = <IUser>request.body;
 
     const user = await User.findOne({ email });
 
