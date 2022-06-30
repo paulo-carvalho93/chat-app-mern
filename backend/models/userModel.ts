@@ -4,18 +4,17 @@ interface IUSer {
   name: string;
   email: string;
   password: string;
-  picture: string;
+  picture?: string;
   isAdmin: boolean;
 }
 
 const userSchema = new Schema<IUSer>(
   {
     name: { type: String, required: true },
-    email: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     picture: {
       type: String,
-      required: true,
       default:
         "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
     },
