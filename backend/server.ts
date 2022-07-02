@@ -8,6 +8,7 @@ import { errorHandler, notFound } from "./middlewares/errorMiddleware";
 import userRoutes from "./routes/userRoutes";
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
+const PORT = process.env.PORT || 5000;
 
 connectDB();
 const app = express();
@@ -20,9 +21,7 @@ app.get("/", (request, response) => {
 });
 
 app.use("/api/user", userRoutes);
-
 app.use(notFound);
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
 app.listen(PORT, console.log(`Server started on Port ${PORT}`));

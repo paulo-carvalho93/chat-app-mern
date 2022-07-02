@@ -9,8 +9,9 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export interface ISignUpProps {}
+import { createUser } from "../../api/services";
 
 interface IUserSignUp {
   name: string;
@@ -20,14 +21,28 @@ interface IUserSignUp {
   picture?: File | string;
 }
 
-export default function SignUp(props: ISignUpProps) {
+const INITIAL_FORM_DATA: IUserSignUp = {
+  name: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+  picture: "",
+};
+
+export default function SignUp() {
   const toast = useToast();
+  const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<IUserSignUp>();
+  const [formData, setFormData] = useState<IUserSignUp>(INITIAL_FORM_DATA);
+
+  const { name, email, password, confirmPassword, picture } = formData;
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setData({ ...data, [event.target.name]: event.target.value });
+    setFormData((prevState) => ({
+      ...prevState,
+      [event.target.name]: event.target.value,
+    }));
   };
 
   const handleShowPassword = () => {
@@ -40,10 +55,11 @@ export default function SignUp(props: ISignUpProps) {
       toast({
         title: "Please, select an image!",
         status: "warning",
-        duration: 5000,
+        duration: 3000,
         isClosable: true,
         position: "bottom",
       });
+      return;
     }
 
     if (pic.type === "image/jpeg" || pic.type === "image/png") {
@@ -52,24 +68,74 @@ export default function SignUp(props: ISignUpProps) {
       data.append("upload_preset", "chat-app");
       data.append("cloud_name", "paulocarvalho");
 
-      fetch("https://api.cloudinary.com/v1_1/paulocarvalho/image/upload", {
+      fetch(import.meta.env.VITE_CLOUDINARY_URI, {
         method: "POST",
         body: data,
       })
         .then((res) => res.json())
         .then((data) => {
-          setData({ ...data, picture: data.url.toString() });
+          setFormData({ ...formData, picture: data.url.toString() });
           setLoading(false);
         })
         .catch((err) => {
           console.log(err);
           setLoading(false);
         });
+    }
+  };
+
+  const handleSubmit = async () => {
+    setLoading(true);
+
+    if (!name || !email || !password || !confirmPassword) {
+      console.log("Entrei", name, email, password, confirmPassword);
+      toast({
+        title: "Please fill all the fields!",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      toast({
+        title: "Passwords do not match!",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
+
+    const payloadUser = {
+      name,
+      email,
+      password,
+      picture,
+    };
+    const { data } = await createUser(payloadUser);
+
+    if (data) {
+      toast({
+        title: "Registration successfull!",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "bottom",
+      });
+      localStorage.setItem("userInfo", JSON.stringify(data));
+      setLoading(false);
+      navigate("chats");
     } else {
       toast({
-        title: "Please, select an image!",
-        status: "warning",
-        duration: 5000,
+        title: "Oops! Something went wrong!!",
+        status: "error",
+        duration: 3000,
         isClosable: true,
         position: "bottom",
       });
@@ -77,12 +143,16 @@ export default function SignUp(props: ISignUpProps) {
     }
   };
 
-  const submitHandler = async () => {
-    setLoading(true);
-  };
-
   return (
     <VStack spacing="0.313rem" color="black">
+      <FormControl id="name" isRequired>
+        <FormLabel>Name</FormLabel>
+        <Input
+          name="name"
+          placeholder="Enter your Name"
+          onChange={handleChange}
+        />
+      </FormControl>
       <FormControl id="email" isRequired>
         <FormLabel>Email</FormLabel>
         <Input
@@ -140,7 +210,7 @@ export default function SignUp(props: ISignUpProps) {
         width="100%"
         style={{ marginTop: 15 }}
         isLoading={loading}
-        onClick={submitHandler}
+        onClick={handleSubmit}
       >
         Sign Up
       </Button>
