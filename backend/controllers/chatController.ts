@@ -1,8 +1,19 @@
 import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
+import { Types } from "mongoose";
 
 import Chat from "../models/chatModel";
 import User from "../models/userModel";
+
+interface IUserRequest {
+  _id: Types.ObjectId;
+  name: string;
+  email: string;
+  picture: string;
+  isAdmin: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 export const accessChat = asyncHandler(
   async (request: Request, response: Response) => {
@@ -92,7 +103,6 @@ export const createGroupChat = asyncHandler(
       });
     }
 
-    console.log(request.user);
     users.push(request.user);
 
     try {
@@ -111,6 +121,31 @@ export const createGroupChat = asyncHandler(
     } catch (error) {
       response.status(400);
       throw new Error(error.message);
+    }
+  }
+);
+
+export const renameGroupChat = asyncHandler(
+  async (request: Request, response: Response) => {
+    const { chatId, chatName } = request.body;
+
+    const updatedNameChat = await Chat.findByIdAndUpdate(
+      chatId,
+      {
+        chatName,
+      },
+      {
+        new: true,
+      }
+    )
+      .populate("users", "-password")
+      .populate("groupAdmin", "-password");
+
+    if (!updatedNameChat) {
+      response.status(404);
+      throw new Error("Chat not Found!");
+    } else {
+      response.json(updatedNameChat);
     }
   }
 );
