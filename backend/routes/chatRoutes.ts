@@ -5,6 +5,8 @@ import {
   fetchChats,
   createGroupChat,
   renameGroupChat,
+  addToGroupChat,
+  leaveGroupChat,
 } from "../controllers/chatController";
 import { protect } from "../middlewares/authMiddleware";
 
@@ -14,7 +16,7 @@ router.route("/").post(protect, accessChat);
 router.route("/").get(protect, fetchChats);
 router.route("/create-group").post(protect, createGroupChat);
 router.route("/rename-group").put(protect, renameGroupChat);
-// router.route("/leave-group").put(protect, leaveGroupChat);
-// router.route("/add-to-group").put(protect, addToGroupChat);
+router.route("/add-to-group").put(protect, addToGroupChat);
+router.route("/leave-group").put(protect, leaveGroupChat);
 
 export default router;

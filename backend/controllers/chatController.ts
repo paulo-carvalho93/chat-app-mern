@@ -143,9 +143,55 @@ export const renameGroupChat = asyncHandler(
 
     if (!updatedNameChat) {
       response.status(404);
-      throw new Error("Chat not Found!");
+      throw new Error("Chat not found!");
     } else {
       response.json(updatedNameChat);
+    }
+  }
+);
+
+export const addToGroupChat = asyncHandler(
+  async (request: Request, response: Response) => {
+    const { chatId, userId } = request.body;
+
+    const addedToChat = await Chat.findByIdAndUpdate(
+      chatId,
+      {
+        $push: { users: userId },
+      },
+      { new: true }
+    )
+      .populate("users", "-password")
+      .populate("groupAdmin", "-password");
+
+    if (!addedToChat) {
+      response.status(404);
+      throw new Error("Chat not found!");
+    } else {
+      response.json(addedToChat);
+    }
+  }
+);
+
+export const leaveGroupChat = asyncHandler(
+  async (request: Request, response: Response) => {
+    const { chatId, userId } = request.body;
+
+    const leaveGroup = await Chat.findByIdAndUpdate(
+      chatId,
+      {
+        $pull: { users: userId },
+      },
+      { new: true }
+    )
+      .populate("users", "-password")
+      .populate("groupAdmin", "-password");
+
+    if (!leaveGroup) {
+      response.status(404);
+      throw new Error("Chat not found!");
+    } else {
+      response.json(leaveGroup);
     }
   }
 );
