@@ -6,13 +6,14 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 
 import "./index.css";
+import ChatProvider from "./context/chatContext";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <BrowserRouter>
+  <BrowserRouter>
+    <ChatProvider>
       <ChakraProvider>
         <App />
       </ChakraProvider>
-    </BrowserRouter>
-  </React.StrictMode>
+    </ChatProvider>
+  </BrowserRouter>
 );
