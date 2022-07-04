@@ -52,3 +52,26 @@ export const accessChat = asyncHandler(
     }
   }
 );
+
+export const fetchChats = asyncHandler(
+  async (request: Request, response: Response) => {
+    try {
+      Chat.find({ users: { $elemMatch: { $eq: request.user._id } } })
+        .populate("users", "-password")
+        .populate("groupAdmin", "-password")
+        .populate("latestMessage")
+        .sort({ updateAt: -1 })
+        .then(async (results) => {
+          results = await User.populate(results, {
+            path: "latestMessage.sender",
+            select: "name picture email",
+          });
+
+          response.status(200).send(results);
+        });
+    } catch (error) {
+      response.status(400);
+      throw new Error(error.message);
+    }
+  }
+);
