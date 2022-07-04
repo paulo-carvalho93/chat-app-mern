@@ -5,6 +5,7 @@ import path from "path";
 
 import connectDB from "./config/db";
 import { errorHandler, notFound } from "./middlewares/errorMiddleware";
+import chatRoutes from "./routes/chatRoutes";
 import userRoutes from "./routes/userRoutes";
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
@@ -21,6 +22,8 @@ app.get("/", (request, response) => {
 });
 
 app.use("/api/user", userRoutes);
+app.use("/api/chat", chatRoutes);
+
 app.use(notFound);
 app.use(errorHandler);
 
