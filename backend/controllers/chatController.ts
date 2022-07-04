@@ -75,3 +75,42 @@ export const fetchChats = asyncHandler(
     }
   }
 );
+
+export const createGroupChat = asyncHandler(
+  async (request: Request, response: Response) => {
+    if (!request.body.users || !request.body.name) {
+      return response
+        .status(400)
+        .send({ message: "Please fill all the fields!" });
+    }
+
+    const users = JSON.parse(request.body.users);
+
+    if (users.length < 2) {
+      return response.status(400).send({
+        message: "More than 2 users are required to form a Group Chat.",
+      });
+    }
+
+    console.log(request.user);
+    users.push(request.user);
+
+    try {
+      const groupChat = await Chat.create({
+        chatName: request.body.name,
+        users,
+        isGroupChat: true,
+        groupAdmin: request.user,
+      });
+
+      const fullGroupChat = await Chat.findOne({ _id: groupChat._id })
+        .populate("users", "-password")
+        .populate("groupAdmin", "-password");
+
+      response.status(200).json(fullGroupChat);
+    } catch (error) {
+      response.status(400);
+      throw new Error(error.message);
+    }
+  }
+);
