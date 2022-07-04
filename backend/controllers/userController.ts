@@ -69,3 +69,21 @@ export const authUser = asyncHandler(
     }
   }
 );
+
+export const getAllUsers = asyncHandler(
+  async (request: Request, response: Response) => {
+    const keyword = request.query.search
+      ? {
+          $or: [
+            { name: { $regex: request.query.search, $options: "i" } },
+            { email: { $regex: request.query.search, $options: "i" } },
+          ],
+        }
+      : {};
+
+    const users = await User.find(keyword).find({
+      _id: { $ne: request.user._id },
+    });
+    response.send(users);
+  }
+);

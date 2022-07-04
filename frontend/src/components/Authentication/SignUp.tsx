@@ -68,6 +68,7 @@ export default function SignUp() {
       data.append("upload_preset", "chat-app");
       data.append("cloud_name", "paulocarvalho");
 
+      // TODO REFACTOR THIS PART
       fetch(import.meta.env.VITE_CLOUDINARY_URI, {
         method: "POST",
         body: data,
