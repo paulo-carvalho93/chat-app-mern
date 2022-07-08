@@ -39,3 +39,30 @@ export async function loginUser(data: ILoginParams) {
     return error;
   }
 }
+
+export async function searchUsers(search: string, token: string) {
+  try {
+    const response = await axios.get(`api/user?search=${search}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+}
+
+export async function accessChat(userId: string, token: string) {
+  try {
+    const response = await axios.post("api/chat", userId, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-type": "application/json",
+      },
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+}

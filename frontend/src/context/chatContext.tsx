@@ -22,6 +22,8 @@ const ChatContext = createContext({} as IChatContextData);
 const ChatProvider = ({ children }: IChatProviderProps) => {
   const navigate = useNavigate();
   const [user, setUser] = useState<IUser>();
+  const [selectedChat, setSelectedChat] = useState();
+  const [chats, setChats] = useState();
 
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
@@ -33,7 +35,9 @@ const ChatProvider = ({ children }: IChatProviderProps) => {
   }, [navigate]);
 
   return (
-    <ChatContext.Provider value={{ user, setUser }}>
+    <ChatContext.Provider
+      value={{ user, setUser, selectedChat, setSelectedChat, chats, setChats }}
+    >
       {children}
     </ChatContext.Provider>
   );
