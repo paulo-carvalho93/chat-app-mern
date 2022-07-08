@@ -1,3 +1,4 @@
+import { BellIcon } from "@chakra-ui/icons";
 import {
   Avatar,
   Box,
@@ -14,6 +15,7 @@ import { Bell, MagnifyingGlass, CaretDown } from "phosphor-react";
 import { useState } from "react";
 
 import { useChatContext } from "../context/chatContext";
+import ProfileModal from "./ProfileModal";
 
 export default function SideDrawer() {
   const [search, setSearch] = useState("");
@@ -50,8 +52,8 @@ export default function SideDrawer() {
 
         <div>
           <Menu>
-            <MenuButton p={1} margin="1">
-              <Bell size={24} />
+            <MenuButton p={1}>
+              <BellIcon fontSize="2xl" m={2} />
             </MenuButton>
             {/* <MenuList></MenuList> */}
           </Menu>
@@ -65,7 +67,9 @@ export default function SideDrawer() {
               />
             </MenuButton>
             <MenuList>
-              <MenuItem>My Profile</MenuItem>
+              <ProfileModal user={user}>
+                <MenuItem>My Profile</MenuItem>
+              </ProfileModal>
               <MenuDivider />
               <MenuItem>Logout</MenuItem>
             </MenuList>

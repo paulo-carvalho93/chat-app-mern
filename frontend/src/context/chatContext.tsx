@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-interface IUser {
+export interface IUser {
   _id: string;
   name: string;
   email: string;
