@@ -3,6 +3,7 @@ import {
   Avatar,
   Box,
   Button,
+  Drawer,
   Menu,
   MenuButton,
   MenuDivider,
@@ -13,17 +14,24 @@ import {
 } from "@chakra-ui/react";
 import { Bell, MagnifyingGlass, CaretDown } from "phosphor-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { useChatContext } from "../context/chatContext";
 import ProfileModal from "./ProfileModal";
 
 export default function SideDrawer() {
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingChat, setLoadingChat] = useState();
 
   const { user } = useChatContext();
+
+  const handleLogout = () => {
+    localStorage.removeItem("userInfo");
+    navigate("/");
+  };
 
   return (
     <>
@@ -71,7 +79,7 @@ export default function SideDrawer() {
                 <MenuItem>My Profile</MenuItem>
               </ProfileModal>
               <MenuDivider />
-              <MenuItem>Logout</MenuItem>
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </MenuList>
           </Menu>
         </div>
