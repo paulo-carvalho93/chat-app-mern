@@ -14,6 +14,7 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
+  Spinner,
   Text,
   Tooltip,
   useDisclosure,
@@ -24,7 +25,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { searchUsers, accessChat } from "../api/services";
-import { useChatContext } from "../context/chatContext";
+import { IUser, useChatContext } from "../context/chatContext";
 import ChatLoading from "./ChatLoading";
 import ProfileModal from "./ProfileModal";
 import UserListItem from "./User/UserListItem";
@@ -79,6 +80,11 @@ export default function SideDrawer() {
     try {
       setLoadingChat(true);
       const { data } = await accessChat(userId, user.token);
+
+      if (!chats.find((chat) => chat._id === data._id)) {
+        setChats([data, ...chats]);
+      }
+
       setSelectedChat(data);
       setLoadingChat(false);
       onClose();
@@ -167,7 +173,7 @@ export default function SideDrawer() {
             {loading ? (
               <ChatLoading />
             ) : (
-              searchResult?.map((user) => (
+              searchResult?.map((user: IUser) => (
                 <UserListItem
                   key={user._id}
                   user={user}
@@ -175,6 +181,7 @@ export default function SideDrawer() {
                 />
               ))
             )}
+            {loadingChat && <Spinner display="flex" ml="auto" />}
           </DrawerBody>
         </DrawerContent>
       </Drawer>

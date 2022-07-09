@@ -54,11 +54,25 @@ export async function searchUsers(search: string, token: string) {
 }
 
 export async function accessChat(userId: string, token: string) {
+  const payload = { userId };
   try {
-    const response = await axios.post("api/chat", userId, {
+    const response = await axios.post("api/chat", payload, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-type": "application/json",
+      },
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+}
+
+export async function fetchChats(token: string) {
+  try {
+    const response = await axios.get("api/chat", {
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
     });
     return response;

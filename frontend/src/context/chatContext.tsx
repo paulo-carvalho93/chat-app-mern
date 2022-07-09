@@ -23,7 +23,7 @@ const ChatProvider = ({ children }: IChatProviderProps) => {
   const navigate = useNavigate();
   const [user, setUser] = useState<IUser>();
   const [selectedChat, setSelectedChat] = useState();
-  const [chats, setChats] = useState();
+  const [chats, setChats] = useState([]);
 
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
